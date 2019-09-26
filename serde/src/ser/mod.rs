@@ -1247,6 +1247,17 @@ pub trait Serializer: Sized {
         len: usize,
     ) -> Result<Self::SerializeStructVariant, Self::Error>;
 
+    /// Serialize a tagged value.
+    ///
+    /// By default, the tag is discarded and the value is serialized as-is.
+    fn serialize_tagged_value<T, V>(self, _tag: T, value: V) -> Result<Self::Ok, Self::Error>
+    where
+        T: ::Tagger,
+        V: Serialize,
+    {
+        value.serialize(self)
+    }
+
     /// Collect an iterator as a sequence.
     ///
     /// The default implementation serializes each item yielded by the iterator

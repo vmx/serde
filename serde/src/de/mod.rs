@@ -1615,6 +1615,7 @@ pub trait Visitor<'de>: Sized {
     {
         let _ = deserializer;
         Err(Error::invalid_type(Unexpected::NewtypeStruct, &self))
+        //Deserialize::deserialize(deserializer)
     }
 
     /// The input contains a sequence of elements.
@@ -1648,6 +1649,17 @@ pub trait Visitor<'de>: Sized {
     {
         let _ = data;
         Err(Error::invalid_type(Unexpected::Enum, &self))
+    }
+
+    /// The input contains a tagged value
+    fn visit_tagged_value<T, D>(self, _tag: T, deserializer: D) -> Result<Self::Value, D::Error>
+    where
+        T: ::Tagger,
+        D: Deserializer<'de>,
+    {
+        //Deserialize::deserialize(deserializer)
+        //Deserializer::deserialize_any(deserializer)
+        Err(Error::invalid_type(Unexpected::NewtypeStruct, &self))
     }
 
     // Used when deserializing a flattened Option field. Not public API.

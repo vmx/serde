@@ -237,11 +237,14 @@ mod integer128;
 
 pub mod de;
 pub mod ser;
+mod tagger;
 
 #[doc(inline)]
 pub use de::{Deserialize, Deserializer};
 #[doc(inline)]
 pub use ser::{Serialize, Serializer};
+#[doc(inline)]
+pub use tagger::Tagger;
 
 // Generated code uses these to support no_std. Not public API.
 #[doc(hidden)]

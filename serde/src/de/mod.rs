@@ -132,6 +132,8 @@ pub use std::error::Error as StdError;
 #[doc(no_inline)]
 pub use std_error::Error as StdError;
 
+use std::any::Any;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 macro_rules! declare_error_trait {
@@ -1650,6 +1652,23 @@ pub trait Visitor<'de>: Sized {
         Err(Error::invalid_type(Unexpected::Enum, &self))
     }
 
+    /// The input contains a tagged value.
+    ///
+    /// The default implementation deserializes the value without the tag.
+    fn visit_tagged_value<T, D>(
+        self,
+        _format: &'static str,
+        _tagger: T,
+        deserializer: D,
+    ) -> Result<Self::Value, D::Error>
+    where
+        T: Tagger,
+        D: Deserializer<'de>,
+    {
+        let _ = deserializer;
+        Err(Error::custom("TODO vmx 2019-10-22: Do actual do the deserialization by default. I sadly can't get that working"))
+    }
+
     // Used when deserializing a flattened Option field. Not public API.
     #[doc(hidden)]
     fn __private_visit_untagged_option<D>(self, _: D) -> Result<Self::Value, ()>
@@ -1661,6 +1680,12 @@ pub trait Visitor<'de>: Sized {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+/// A trait that returns the tag of a tagged value
+pub trait Tagger {
+    /// This return that tag of a tagged value. Use downcasting to get the actual value.
+    fn tag(&self) -> &dyn Any;
+}
 
 /// Provides a `Visitor` access to each element of a sequence in the input.
 ///
